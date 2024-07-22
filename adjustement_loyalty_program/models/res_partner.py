@@ -12,7 +12,7 @@ class ResPartner(models.Model):
     sale_order_count_new = fields.Integer("Total des ventes", readonly=1)
     pos_order_count_new = fields.Integer("Total des points de ventes",  readonly=1)
     total_total = fields.Integer("Total", compute='_compute_total_total')
-    total_total_dh = fields.Integer("Total des ventes en dh", compute='_compute_total_total', store=True)
+    total_total_dh = fields.Integer("Total des ventes en dh", compute='_compute_total_total')
     all_loyalty_card_count = fields.Integer(compute='_compute_all_loyalty_card',  store=True)
     loyalty_nbr = fields.Integer(compute='_compute_all_loyalty_card',  store=True)
     participation_rate = fields.Float(compute='_compute_participation_rate', store=True, size=4)
