@@ -11,8 +11,8 @@ class ResPartner(models.Model):
 
     sale_order_count_new = fields.Integer("Total des ventes", readonly=1)
     pos_order_count_new = fields.Integer("Total des points de ventes",  readonly=1)
-    total_total = fields.Integer("Total", compute='_compute_total_total')
-    total_total_dh = fields.Integer("Total des ventes en dh", compute='_compute_total_total')
+    total_total = fields.Integer("Total", compute='_compute_total_total', store=True)
+    total_total_dh = fields.Integer("Total des ventes en dh", compute='_compute_total_total', store=True)
     all_loyalty_card_count = fields.Integer(compute='_compute_all_loyalty_card',  store=True)
     loyalty_nbr = fields.Integer(compute='_compute_all_loyalty_card',  store=True)
     participation_rate = fields.Float(compute='_compute_participation_rate', store=True, size=4)
@@ -20,16 +20,18 @@ class ResPartner(models.Model):
 
     @api.depends('sale_order_count_new', 'pos_order_count_new')
     def _compute_total_total(self):
-        total_pos = 0.0
-        total_sale = 0.0
         for rec in self:
-            self.total_total = rec.sale_order_count_new + rec.pos_order_count
-        for rec in self.pos_order_ids:
-            total_pos += rec.amount_total
-        for rec in self.sale_order_ids:
-            total_sale += rec.amount_total
-        self.total_total_dh = total_pos + total_pos
-        print(222,total_pos)
+            total_pos_sale = 0.0
+            self.total_total = rec.sale_order_count_new + rec.pos_order_count_new
+            for total in rec.pos_order_ids:
+                total_pos_sale += total.amount_total
+                print(1212, total_pos_sale)
+            for total in rec.sale_order_ids:
+                total_pos_sale += total.amount_total
+                print(43434, total_pos_sale)
+
+            rec.total_total_dh = total_pos_sale
+            print(222,total_pos_sale)
 
 
     def _compute_pos_order(self):
@@ -107,5 +109,3 @@ class ResPartner(models.Model):
     #         for rec in partner_ids:
     #             all_loyalty_card_count += rec.loyalty_card_count
     #         self.all_loyalty_card_count = all_loyalty_card_count
-
-
