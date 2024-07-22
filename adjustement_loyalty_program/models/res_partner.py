@@ -74,31 +74,19 @@ class ResPartner(models.Model):
                 partner = partner.parent_id
 
     def _compute_participation_rate(self):
-        self.participation_rate = self.all_loyalty_card_count/self.loyalty_nbr
+        for rec in self:
+            self.participation_rate = rec.all_loyalty_card_count/rec.loyalty_nbr
 
     @api.depends('loyalty_card_count')
     def _compute_all_loyalty_card(self):
-        print(111111111111111111111111111111111111111)
-        all_loyalty_card_count = self.env['loyalty.card'].search([('partner_id', '=', self.id), ('points', '=', 0)]).ids
-        loyalty_nbr = self.env['loyalty.card'].search([('partner_id', '=', self.id)]).ids
-        self.loyalty_nbr = int(len(all_loyalty_card_count))
-        self.all_loyalty_card_count = int(len(loyalty_nbr))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        for rec in self:
+            all_loyalty_card_count = self.env['loyalty.card'].search([('partner_id', '=', rec.id),
+                                                                      ('points', '=', 0)]).ids
+            loyalty_nbr = self.env['loyalty.card'].search([('partner_id', '=', rec.id)]).ids
+            if all_loyalty_card_count:
+                self.loyalty_nbr = int(len(all_loyalty_card_count))
+            if loyalty_nbr:
+                self.all_loyalty_card_count = int(len(loyalty_nbr))
 
 
 
