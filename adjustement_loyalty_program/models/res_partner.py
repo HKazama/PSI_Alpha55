@@ -5,7 +5,6 @@ from odoo import api, fields, models
 from odoo.osv import expression
 
 
-
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
@@ -17,6 +16,8 @@ class ResPartner(models.Model):
     loyalty_nbr = fields.Integer(compute='_compute_all_loyalty_card',  store=True)
     participation_rate = fields.Float(compute='_compute_participation_rate', store=True, size=4)
     create_date = fields.Datetime(readonly=False)
+    # program_ids = fields.Many2one('loyalty.program')
+
 
     @api.depends('sale_order_count_new', 'pos_order_count_new')
     def _compute_total_total(self):
@@ -25,13 +26,9 @@ class ResPartner(models.Model):
             self.total_total = rec.sale_order_count_new + rec.pos_order_count_new
             for total in rec.pos_order_ids:
                 total_pos_sale += total.amount_total
-                print(1212, total_pos_sale)
             for total in rec.sale_order_ids:
                 total_pos_sale += total.amount_total
-                print(43434, total_pos_sale)
-
             rec.total_total_dh = total_pos_sale
-            print(222,total_pos_sale)
 
 
     def _compute_pos_order(self):
@@ -90,22 +87,3 @@ class ResPartner(models.Model):
                 self.loyalty_nbr = int(len(all_loyalty_card_count))
             if loyalty_nbr:
                 self.all_loyalty_card_count = int(len(loyalty_nbr))
-
-
-
-
-
-
-
-
-
-
-    # def _compute_all_loyalty_card(self):
-    #     for record in self:
-    #         all_loyalty_card_count = 0.0
-    #         res = self.get_external_id()
-    #         partners_ids = list(res.keys())
-    #         partner_ids = record.search([('loyalty_card_count', '!=', 0), ('id', 'in', partners_ids)])
-    #         for rec in partner_ids:
-    #             all_loyalty_card_count += rec.loyalty_card_count
-    #         self.all_loyalty_card_count = all_loyalty_card_count
