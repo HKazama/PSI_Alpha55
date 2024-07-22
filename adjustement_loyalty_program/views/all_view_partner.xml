@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+
+    <!--    <record model="ir.actions.act_window" id="action_report_crm_all">-->
+    <!--        <field name="name">Rapport generator</field>-->
+    <!--        <field name="res_model">crm.lead</field>-->
+    <!--        <field name="view_mode">tree,form</field>-->
+    <!--        <field name="domain">[('type','=','opportunity')]</field>-->
+    <!--        <field name="view_id" ref="psi_crm_cc.crm_lead_tree_pipeline_psi"/>-->
+    <!--        <field name="context">{-->
+    <!--            'default_type': 'opportunity',-->
+    <!--            }-->
+    <!--        </field>-->
+    <!--        <field name="search_view_id" ref="psi_crm_cc.view_crm_case_opportunities_filter_psi"/>-->
+    <!--    </record>-->
+
+    <!--        search view lead report -->
+    <record id="res_partner_view_form_inherit_alpha" model="ir.ui.view">
+            <field name="name">res.partner.view.form.inherit.alpha</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='function']" position="after">
+                     <field name="sale_order_count_new"/>
+                     <field name="pos_order_count_new"/>
+                     <field name="total_total"/>
+                     <field name="total_total_dh"/>
+                </xpath>
+            </field>
+    </record>
+
+    <record id="alpha_partner_view_tree" model="ir.ui.view">
+        <field name="name">res.partner.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Contacts" sample="1" multi_edit="1">
+                    <field name="display_name" string="Name"/>
+                    <field name="create_date" string="Date création"/>
+                    <field name="all_loyalty_card_count"  string="nombre de coupons utilisés" sum="Nombre des coupons"/>
+                    <field name="loyalty_nbr"  string="nnombre de coupons distribués"
+                           sum="nombre de coupons distribués"/>
+                 <field name="participation_rate"  string="Taux de participation par semaine"
+                           sum="Taux de participation"/>
+
+                    <field name="phone" class="o_force_ltr" optional="hide"/>
+                    <field name="mobile" optional="hide"/>
+                    <field name="email" optional="show"/>
+                    <field name="user_id" optional="hide" widget="many2one_avatar_user" domain="[('share', '=', False)]"/>
+                    <field name="city" optional="show"/>
+                    <field name="state_id" optional="hide" readonly="1"/>
+                    <field name="country_id" optional="show" readonly="1"/>
+                    <field name="vat" optional="hide" readonly="1"/>
+                    <field name="category_id" optional="hide" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                    <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                    <field name="is_company" column_invisible="True"/>
+                    <field name="parent_id" readonly="1" column_invisible="True"/>
+                    <field name="active" column_invisible="True"/>
+                </tree>
+        </field>
+    </record>
+    <record id="alpha_partner_view_search" model="ir.ui.view">
+        <field name="name">res.partner.search</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search string="contacts collectés">
+                <filter string="Current Week" name="current_week"
+                        domain="[('create_date', '&lt;=', ((context_today()+relativedelta(weeks=0, weekday=-1)).strftime('%Y-%m-%d'))),
+                        ('create_date', '&gt;=', ((context_today()-relativedelta(weeks=1, weekday=0)).strftime('%Y-%m-%d')))]"/>
+                                    <separator/>
+
+                <filter string="Contact fidéle" name="partner_loyalty" domain="[('sale_order_count_new', '>=', 2)]"/>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_res_partner_alpha" model="ir.actions.act_window">
+        <field name="name">Nombre de contacts collectés par semaine</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="adjustement_loyalty_program.alpha_partner_view_search"/>
+        <field name="view_id" ref="alpha_partner_view_tree"/>
+            <field name="context">{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}</field>
+
+<!--        <field name="context">{"search_default_filter_current_week":1}</field>-->
+
+
+    </record>
+
+
+    <menuitem id="manu_res_partner_alpha" name="Les contacts collectés" parent="point_of_sale.menu_point_rep"
+              action="action_res_partner_alpha" sequence="1"/>
+
+</odoo>
