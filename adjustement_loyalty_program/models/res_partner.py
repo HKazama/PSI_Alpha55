@@ -75,7 +75,7 @@ class ResPartner(models.Model):
 
     def _compute_participation_rate(self):
         for rec in self:
-            if rec.loyalty_nbr =! 0 :
+            if rec.loyalty_nbr != 0 :
                 self.participation_rate = rec.all_loyalty_card_count/rec.loyalty_nbr
 
     @api.depends('loyalty_card_count')
