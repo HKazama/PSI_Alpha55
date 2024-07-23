@@ -17,7 +17,7 @@ class LoyaltyProgram(models.Model):
 
     def _compute_participation_rate(self):
         for rec in self:
-            if rec.coupon_count != 0:
+            if rec.nbr_coupon_util != 0:
                 self.participation_rate = rec.coupon_count/rec.nbr_coupon_util
 
     def _calcule_nbr_coupon_util(self):
