@@ -118,6 +118,7 @@
             <xpath expr="//field[@name='date_from']" position="after">
                 <field name="investment"/>
                 <field name="nbr_coupon_util"/>
+                <field name="total_order"/>
             </xpath>
         </field>
     </record>
@@ -130,12 +131,13 @@
             <tree>
                 <field name="coupon_count" string="Nombre des coupons distribués" sum="Total des coupon"/>
                 <field name="nbr_coupon_util" string="Nombre des coupons utilisés" sum="Total des coupon utilisés"/>
-                <field name="participation_rate" sum="Taux de participation"/>
+                <field name="participation_rate" sum="Taux de participation" widget="percentage"/>
                 <field name="name"/>
                 <field name="program_type"/>
                 <field name="coupon_count_display" string="Items" column_invisible="1"/>
                 <field name="company_id" groups="base.group_multi_company" column_invisible="1"/>
                 <field name="investment" sum="Investisment"/>
+                <field name="total_order"  sum="Total des order par commande"/>
                 <field name="roi" sum="Total de ROI"/>
             </tree>
         </field>
