@@ -18,23 +18,6 @@ class ResPartner(models.Model):
     loyalty_nbr = fields.Integer(compute='_compute_all_loyalty_card',  store=True)
     participation_rate = fields.Float(compute='_compute_participation_rate', store=True, size=4)
     create_date = fields.Datetime(readonly=False)
-    # program_ids = fields.Many2one('loyalty.program')
-    date_today = fields.Date("date d'aujourdhuit",default=fields.Date.today())
-    is_today = fields.Boolean(string='Created Today', compute='_compute_is_today', store=True)
-    @api.depends('date_today')
-    def _compute_is_today(self):
-        for partner in self:
-            if partner.create_date:
-                create_date = fields.Datetime.from_string(partner.create_date)
-                today_date = fields.Date.context_today(self)
-
-                if create_date.date() == today_date:
-                    partner.is_today = True
-                else:
-                    partner.is_today = False
-            else:
-                partner.is_today = False
-
 
     @api.depends('sale_order_count_new', 'pos_order_count_new')
     def _compute_total_total(self):
